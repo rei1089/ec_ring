@@ -1,22 +1,29 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = "https://nigaefyqrqhtuxqgbsot.supabase.co";
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey =
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_KEY;
 
 // 環境変数が設定されていない場合は警告を表示
+if (!supabaseUrl) {
+  console.warn(
+    "NEXT_PUBLIC_SUPABASE_URL が設定されていません。.env.local もしくはVercelの環境変数に設定してください。"
+  );
+}
+
 if (!supabaseAnonKey) {
   console.warn(
-    "Supabase環境変数が設定されていません。.env.localファイルに以下を追加してください："
+    "SupabaseのAnon Keyが設定されていません。.env.local もしくはVercelの環境変数に設定してください。"
   );
   console.warn("NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key");
   console.warn("または");
   console.warn("SUPABASE_KEY=your_supabase_key");
 }
 
-export const supabase = supabaseAnonKey
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : null;
+export const supabase =
+  supabaseUrl && supabaseAnonKey
+    ? createClient(supabaseUrl, supabaseAnonKey)
+    : null;
 
 // 型定義
 export type Database = {
